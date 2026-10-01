@@ -1,0 +1,21 @@
+{
+  "name": "datacanvas-promo-video",
+  "version": "1.0.0",
+  "description": "15s Motion Design Promo Video for DataCanvas BI in Remotion",
+  "scripts": {
+    "start": "remotion studio src/index.ts",
+    "build": "remotion render src/index.ts ProductVideo out/video.mp4"
+  },
+  "dependencies": {
+    "@remotion/media-utils": "^4.0.260",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.260"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.260",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  }
+}
