@@ -1,0 +1,131 @@
+#!/usr/bin/env python3
+# (c) 2026 Ranuk IT Solutions - ranuk.dev
+"""
+Campaña de difusión cada 3 días para DataCanvas BI en X (@ranuk_dev).
+Rota entre 3 ángulos comerciales con adjuntos visuales de alta conversión.
+"""
+import os
+import sys
+import json
+import time
+import argparse
+import subprocess
+from datetime import datetime
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DOCS_DIR = ROOT_DIR / "docs"
+POST_SCRIPT = Path.home() / "Apps" / "ranukita-bridge" / "scripts" / "rk-x-post.py"
+STATE_FILE = Path.home() / ".ranukita" / "datacanvas_promo_state.json"
+
+TWEETS = [
+    {
+        "id": "ANGLE_1_SPEED_DASHBOARD",
+        "text": (
+            "¿Cansado de que ChatGPT te devuelva gráficos estáticos o código de matplotlib?\n\n"
+            "Lanzamos DataCanvas BI: extensión MCP nativa para convertir cualquier CSV o tabla "
+            "en dashboards interactivos en tiempo real dentro del panel lateral de ChatGPT 📊⚡\n\n"
+            "Explora KPIs, filtra en vivo y exporta PDFs ejecutivos.\n\n"
+            "👉 Pruébalo gratis / Acceso Pro: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01\n"
+            "#ChatGPT #MCP #DataAnalytics #BuildInPublic #AI"
+        ),
+        "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
+    },
+    {
+        "id": "ANGLE_2_BUSINESS_EXECUTIVE",
+        "text": (
+            "Para analistas, consultores y founders que viven en ChatGPT:\n\n"
+            "Con DataCanvas BI, pasas de datos crudos a un reporte visual para clientes en 10 segundos.\n"
+            "• Motor DuckDB-WASM 100% privado en navegador\n"
+            "• Filtros reactivos y gráficos Apache ECharts\n"
+            "• Exportación de PDFs ejecutivos listos para enviar\n\n"
+            "🔗 Conéctalo a tu flujo: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01\n"
+            "#BusinessIntelligence #DataScience #OpenAI #Productivity"
+        ),
+        "image": DOCS_DIR / "datacanvas_screenshot.png"
+    },
+    {
+        "id": "ANGLE_3_DEV_MCP_ARCHITECTURE",
+        "text": (
+            "El futuro de los agentes no son solo respuestas de texto: son micro-frontends interactivos.\n\n"
+            "Diseñamos DataCanvas sobre Model Context Protocol (MCP) y OpenAI Apps SDK para inyectar "
+            "dashboards interactivos directamente en el chat.\n\n"
+            "Código abierto + Pro Cloud:\n"
+            "💻 Repo: https://github.com/RanuK12/rk-mcp-datacanvas\n"
+            "🚀 Pro Pass: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
+        ),
+        "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
+    }
+]
+
+def load_state():
+    if STATE_FILE.exists():
+        try:
+            with open(STATE_FILE, "r") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"last_index": -1, "last_posted_ts": 0}
+
+def save_state(state):
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f, indent=2)
+
+def run_promo(dry_run=False, force=False):
+    state = load_state()
+    now = time.time()
+    
+    # 3 days in seconds = 259200
+    interval = 3 * 86400
+    elapsed = now - state.get("last_posted_ts", 0)
+    
+    if not force and elapsed < interval and not dry_run:
+        days_left = (interval - elapsed) / 86400
+        print(f"[DataCanvas X Promo] Aún faltan {days_left:.1f} días para el próximo tweet programado.")
+        return
+
+    next_idx = (state.get("last_index", -1) + 1) % len(TWEETS)
+    tweet = TWEETS[next_idx]
+
+    print("==================================================")
+    print(f"Ángulo a publicar [{next_idx + 1}/{len(TWEETS)}]: {tweet['id']}")
+    print(f"Imagen: {tweet['image']}")
+    print("--------------------------------------------------")
+    print(tweet["text"])
+    print("==================================================")
+
+    if dry_run:
+        print("[DRY-RUN] Tweet verificado. No se publicó.")
+        return
+
+    if not POST_SCRIPT.exists():
+        print(f"ERROR: {POST_SCRIPT} no encontrado.")
+        sys.exit(1)
+
+    cmd = [
+        "python3",
+        str(POST_SCRIPT),
+        "--cuenta", "ranuk_dev",
+        "--texto", tweet["text"],
+    ]
+    if tweet["image"].exists():
+        cmd.extend(["--imagen", str(tweet["image"])])
+
+    print("Ejecutando publicación vía rk-x-post.py...")
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    print(res.stdout)
+    if res.returncode == 0:
+        state["last_index"] = next_idx
+        state["last_posted_ts"] = now
+        save_state(state)
+        print("✓ Publicación en @ranuk_dev exitosa.")
+    else:
+        print(f"Error al publicar en X: {res.stderr}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true", help="Muestra el contenido sin publicar")
+    parser.add_argument("--force", action="store_true", help="Fuerza publicación sin esperar 3 días")
+    args = parser.parse_args()
+    run_promo(dry_run=args.dry_run, force=args.force)
