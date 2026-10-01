@@ -266,8 +266,8 @@
     document.getElementById('btn-close-modal').addEventListener('click', closeModal);
 
     document.getElementById('btn-go-checkout').addEventListener('click', () => {
-      // Abre en nueva pestaña externa cumpliendo 100% las directrices de OpenAI
-      const checkoutUrl = 'https://datacanvas.ranuk.dev/checkout?ref=chatgpt_panel&uid=' + Math.random().toString(36).substring(7);
+      // Enlace oficial de checkout en Stripe creado para DataCanvas Pro
+      const checkoutUrl = 'https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01?client_reference_id=' + Math.random().toString(36).substring(7);
       window.open(checkoutUrl, '_blank');
       closeModal();
     });
