@@ -9,16 +9,21 @@
     "url": "https://ranuk.dev"
   },
   "interface": {
-    "displayName": "DataCanvas — Interactive CSV & Sales Dashboard",
-    "shortDescription": "Transform CSVs and spreadsheets into interactive real-time visual dashboards inside ChatGPT.",
+    "displayName": "DataCanvas BI Dashboard",
+    "shortDescription": "Interactive CSV Dashboards",
     "longDescription": "DataCanvas transforms spreadsheets, CSVs, and sales tables into interactive dashboards in ChatGPT conversation panels. Filter data, toggle dynamic charts (bars, lines, donut), inspect KPIs in real-time, and download executive PDF reports with zero manual rework.",
-    "developerName": "Emilio Ranucoli (Ranuk IT Solutions)",
+    "developerName": "Emilio Ranucoli",
     "category": "Productivity",
     "capabilities": ["interactive_ui", "mcp"],
-    "websiteUrl": "https://datacanvas.ranuk.dev",
-    "privacyPolicyUrl": "https://datacanvas.ranuk.dev/privacy",
-    "termsOfServiceUrl": "https://datacanvas.ranuk.dev/terms"
+    "websiteUrl": "https://ranuk.dev",
+    "supportUrl": "https://ranuk.dev",
+    "privacyPolicyUrl": "https://ranuk.dev/privacy",
+    "termsOfServiceUrl": "https://ranuk.dev/terms"
   },
+  "website": "https://ranuk.dev",
+  "support": "https://ranuk.dev",
+  "privacyPolicy": "https://ranuk.dev/privacy",
+  "termsOfService": "https://ranuk.dev/terms",
   "mcpServers": "./.mcp.json",
   "skills": [
     "./skills/datacanvas"
