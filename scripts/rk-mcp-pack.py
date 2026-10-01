@@ -21,7 +21,10 @@ def validate_and_pack():
         "plugin.json",
         ".codex-plugin/plugin.json",
         ".agent-plugin/plugin.json",
-        ".mcp.json"
+        ".mcp.json",
+        "icon.png",
+        "PRIVACY.md",
+        "TERMS.md"
     ]
     for m in required_manifests:
         p = os.path.join(ROOT_DIR, m)
@@ -43,8 +46,13 @@ def validate_and_pack():
         "manifest.json",
         "plugin.json",
         ".mcp.json",
+        "icon.png",
+        "PRIVACY.md",
+        "TERMS.md",
         ".codex-plugin/plugin.json",
+        ".codex-plugin/icon.png",
         ".agent-plugin/plugin.json",
+        ".agent-plugin/icon.png",
         "skills/datacanvas/SKILL.md",
         "README.md",
         "server/main.py",

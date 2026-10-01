@@ -2,28 +2,29 @@
   "$schema": "https://developers.openai.com/schemas/plugin-v1.json",
   "name": "datacanvas",
   "version": "1.0.0",
-  "description": "Transform CSVs, spreadsheets, and business tables into interactive real-time visual dashboards inside ChatGPT sidebar & conversation panels. Filter data, inspect KPIs, and download executive PDF reports.",
+  "description": "Visualize tabular data and CSV files with interactive charts in conversation panels.",
   "author": {
     "name": "Emilio Ranucoli",
     "email": "soporte@ranuk.dev",
-    "url": "https://ranuk.dev"
+    "url": "https://github.com/RanuK12/rk-mcp-datacanvas"
   },
   "interface": {
-    "displayName": "DataCanvas BI Dashboard",
+    "displayName": "DataCanvas BI",
     "shortDescription": "Interactive CSV Dashboards",
-    "longDescription": "DataCanvas transforms spreadsheets, CSVs, and sales tables into interactive dashboards in ChatGPT conversation panels. Filter data, toggle dynamic charts (bars, lines, donut), inspect KPIs in real-time, and download executive PDF reports with zero manual rework.",
+    "longDescription": "DataCanvas renders CSV and tabular data into interactive charts in ChatGPT conversation panels. Users can filter categories, inspect KPI metrics, and export PDF summaries.",
     "developerName": "Emilio Ranucoli",
-    "category": "Productivity",
-    "capabilities": ["interactive_ui", "mcp"],
-    "websiteUrl": "https://ranuk.dev",
-    "supportUrl": "https://ranuk.dev",
-    "privacyPolicyUrl": "https://ranuk.dev/privacy",
-    "termsOfServiceUrl": "https://ranuk.dev/terms"
+    "category": "Other",
+    "capabilities": ["interactive_ui"],
+    "websiteUrl": "https://github.com/RanuK12/rk-mcp-datacanvas",
+    "supportUrl": "https://github.com/RanuK12/rk-mcp-datacanvas/issues",
+    "privacyPolicyUrl": "https://github.com/RanuK12/rk-mcp-datacanvas/blob/main/PRIVACY.md",
+    "termsOfServiceUrl": "https://github.com/RanuK12/rk-mcp-datacanvas/blob/main/TERMS.md"
   },
-  "website": "https://ranuk.dev",
-  "support": "https://ranuk.dev",
-  "privacyPolicy": "https://ranuk.dev/privacy",
-  "termsOfService": "https://ranuk.dev/terms",
+  "icon": "icon.png",
+  "website": "https://github.com/RanuK12/rk-mcp-datacanvas",
+  "support": "https://github.com/RanuK12/rk-mcp-datacanvas/issues",
+  "privacyPolicy": "https://github.com/RanuK12/rk-mcp-datacanvas/blob/main/PRIVACY.md",
+  "termsOfService": "https://github.com/RanuK12/rk-mcp-datacanvas/blob/main/TERMS.md",
   "mcpServers": "./.mcp.json",
   "skills": [
     "./skills/datacanvas"
