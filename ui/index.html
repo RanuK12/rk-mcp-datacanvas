@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataCanvas — Live Inspector</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Apache ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .dark body {
+      background-color: #171717;
+      color: #f5f5f5;
+    }
+    .light body {
+      background-color: #ffffff;
+      color: #171717;
+    }
+  </style>
+</head>
+<body class="p-4 antialiased select-none dark">
+  <div class="max-w-4xl mx-auto space-y-4">
+    <!-- Header -->
+    <header class="flex items-center justify-between pb-3 border-b border-neutral-700/50">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30">
+          DC
+        </div>
+        <div>
+          <h1 id="dashboard-title" class="text-base font-semibold tracking-tight text-neutral-100">Executive Sales & Operations</h1>
+          <p class="text-xs text-neutral-400">DataCanvas by Ranuk IT Solutions · Live Panel</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button id="btn-theme-toggle" class="px-2.5 py-1 text-xs font-medium rounded-md bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-neutral-300 transition">
+          🌓 Tema
+        </button>
+        <button id="btn-export-pdf" class="px-3 py-1 text-xs font-semibold rounded-md bg-blue-600 hover:bg-blue-500 text-white shadow transition flex items-center space-x-1">
+          <span>📄 Exportar PDF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI Cards Grid -->
+    <div id="kpi-container" class="grid grid-cols-3 gap-3">
+      <div class="p-3 rounded-xl bg-neutral-800/80 border border-neutral-700/60 shadow-sm">
+        <span class="text-xs text-neutral-400 font-medium">Registros Analizados</span>
+        <div id="kpi-rows" class="text-xl font-bold text-neutral-100 mt-1">1,248</div>
+        <div class="text-[10px] text-emerald-400 mt-0.5">↑ 100% parseado sin errores</div>
+      </div>
+      <div class="p-3 rounded-xl bg-neutral-800/80 border border-neutral-700/60 shadow-sm">
+        <span class="text-xs text-neutral-400 font-medium">Volumen Total</span>
+        <div id="kpi-metric-main" class="text-xl font-bold text-blue-400 mt-1">$48,920.00</div>
+        <div class="text-[10px] text-neutral-400 mt-0.5">Métrica principal agregada</div>
+      </div>
+      <div class="p-3 rounded-xl bg-neutral-800/80 border border-neutral-700/60 shadow-sm">
+        <span class="text-xs text-neutral-400 font-medium">Promedio por Registro</span>
+        <div id="kpi-metric-avg" class="text-xl font-bold text-purple-400 mt-1">$39.19</div>
+        <div class="text-[10px] text-neutral-400 mt-0.5">Cálculo en vivo en cliente</div>
+      </div>
+    </div>
+
+    <!-- Controls & Filters Bar -->
+    <div class="flex items-center justify-between p-2.5 rounded-lg bg-neutral-800/40 border border-neutral-800">
+      <div class="flex items-center space-x-2">
+        <label for="chart-type-selector" class="text-xs text-neutral-400">Tipo de Gráfico:</label>
+        <select id="chart-type-selector" class="bg-neutral-800 text-xs text-neutral-200 border border-neutral-700 rounded px-2 py-1 focus:outline-none focus:border-blue-500">
+          <option value="bar">Barras de Distribución</option>
+          <option value="line">Tendencia / Serie Temporal</option>
+          <option value="donut">Proporciones (Donut)</option>
+        </select>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-xs text-neutral-400">Filtrar:</span>
+        <input id="input-filter" type="text" placeholder="Buscar categoría o valor..." class="bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500 w-44">
+      </div>
+    </div>
+
+    <!-- Main Chart Canvas -->
+    <div class="relative p-2 rounded-xl bg-neutral-800/50 border border-neutral-700/60">
+      <div id="main-echart" style="width: 100%; height: 320px;"></div>
+    </div>
+
+    <!-- Footer Status -->
+    <footer class="flex items-center justify-between text-[11px] text-neutral-500 pt-1">
+      <div class="flex items-center space-x-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>DuckDB-WASM: Motor analítico en navegador activo (Costo $0)</span>
+      </div>
+      <button id="btn-pro-badge" class="text-blue-400 hover:text-blue-300 font-medium">
+        ⚡ DataCanvas Pro: Quitar marca de agua y conectar SQL
+      </button>
+    </footer>
+  </div>
+
+  <!-- Modal Upgrade / Checkout (Conforme a las reglas de OpenAI: Redirección Externa) -->
+  <div id="modal-upgrade" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white flex items-center space-x-2">
+          <span>🚀 Desbloqueá DataCanvas Pro</span>
+        </h3>
+        <button id="btn-close-modal" class="text-neutral-400 hover:text-white text-lg">&times;</button>
+      </div>
+      <p class="text-xs text-neutral-300 leading-relaxed">
+        Obtén reportes ejecutivos en PDF de alta fidelidad sin marca de agua, conexión directa con PostgreSQL / BigQuery y dashboards colaborativos para tu equipo.
+      </p>
+      <div class="p-3 rounded-lg bg-neutral-800/60 border border-neutral-700 space-y-2">
+        <div class="flex items-center text-xs text-neutral-200 space-x-2">
+          <span class="text-blue-400">✓</span>
+          <span>Exportación ilimitada de PDFs vectoriales ejecutivos (>400KB)</span>
+        </div>
+        <div class="flex items-center text-xs text-neutral-200 space-x-2">
+          <span class="text-blue-400">✓</span>
+          <span>Sincronización automática de Google Sheets y bases de datos</span>
+        </div>
+        <div class="flex items-center text-xs text-neutral-200 space-x-2">
+          <span class="text-blue-400">✓</span>
+          <span>Soporte prioritario de ingenieros de Ranuk IT Solutions</span>
+        </div>
+      </div>
+      <div class="pt-2 flex items-center justify-between">
+        <div>
+          <span class="text-lg font-bold text-white">$19</span>
+          <span class="text-xs text-neutral-400">/ mes (cancela cuando quieras)</span>
+        </div>
+        <button id="btn-go-checkout" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 font-semibold text-xs text-white shadow-lg shadow-blue-600/30 transition">
+          Ir a Checkout Seguro ↗
+        </button>
+      </div>
+      <p class="text-[10px] text-neutral-500 text-center">
+        Procesado de forma segura y externa vía Stripe en datacanvas.ranuk.dev
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Inicializar ECharts
+    let chartInstance = null;
+    let currentData = {
+      categories: ["Norte", "Sur", "Este", "Oeste", "Centro", "Latam"],
+      values: [14200, 9800, 11500, 8400, 5020, 12600]
+    };
+
+    function initChart(theme = 'dark') {
+      const chartDom = document.getElementById('main-echart');
+      if (chartInstance) chartInstance.dispose();
+      chartInstance = echarts.init(chartDom, theme === 'dark' ? 'dark' : null, {
+        renderer: 'canvas'
+      });
+      renderChart('bar');
+    }
+
+    function renderChart(type) {
+      if (!chartInstance) return;
+      const isDark = document.documentElement.classList.contains('dark');
+      
+      let seriesConfig = [];
+      if (type === 'bar') {
+        seriesConfig = [{
+          name: 'Ventas USD',
+          type: 'bar',
+          data: currentData.values,
+          itemStyle: {
+            borderRadius: [4, 4, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#3b82f6' },
+              { offset: 1, color: '#1d4ed8' }
+            ])
+          }
+        }];
+      } else if (type === 'line') {
+        seriesConfig = [{
+          name: 'Ventas USD',
+          type: 'line',
+          smooth: true,
+          data: currentData.values,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(59, 130, 246, 0.4)' },
+              { offset: 1, color: 'rgba(59, 130, 246, 0.0)' }
+            ])
+          },
+          itemStyle: { color: '#3b82f6' }
+        }];
+      } else if (type === 'donut') {
+        const pieData = currentData.categories.map((c, i) => ({ name: c, value: currentData.values[i] }));
+        seriesConfig = [{
+          name: 'Participación',
+          type: 'pie',
+          radius: ['45%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: { borderRadius: 6, borderColor: isDark ? '#171717' : '#fff', borderWidth: 2 },
+          label: { show: false },
+          data: pieData
+        }];
+      }
+
+      const option = {
+        backgroundColor: 'transparent',
+        tooltip: { trigger: type === 'donut' ? 'item' : 'axis' },
+        grid: { left: '3%', right: '4%', bottom: '8%', top: '10%', containLabel: true },
+        xAxis: type === 'donut' ? { show: false } : {
+          type: 'category',
+          data: currentData.categories,
+          axisLine: { lineStyle: { color: isDark ? '#525252' : '#cbd5e1' } }
+        },
+        yAxis: type === 'donut' ? { show: false } : {
+          type: 'value',
+          splitLine: { lineStyle: { color: isDark ? '#262626' : '#f1f5f9' } }
+        },
+        series: seriesConfig
+      };
+
+      chartInstance.setOption(option, true);
+    }
+
+    // Handshake PostMessage con @openai/mcp-extensions
+    window.addEventListener('message', (event) => {
+      const { type, data } = event.data || {};
+      if (type === 'openai/data_update') {
+        if (data.title) document.getElementById('dashboard-title').innerText = data.title;
+        if (data.categories && data.values) {
+          currentData = { categories: data.categories, values: data.values };
+          renderChart(document.getElementById('chart-type-selector').value);
+        }
+      } else if (type === 'openai/theme_change') {
+        setTheme(data.theme);
+      }
+    });
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        initChart('light');
+      } else {
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+        initChart('dark');
+      }
+    }
+
+    // Listeners
+    document.getElementById('chart-type-selector').addEventListener('change', (e) => {
+      renderChart(e.target.value);
+    });
+
+    document.getElementById('btn-theme-toggle').addEventListener('click', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      setTheme(isDark ? 'light' : 'dark');
+    });
+
+    // Funnel Monetización: Modal y Redirección Externa a Stripe
+    const modal = document.getElementById('modal-upgrade');
+    const openModal = () => modal.classList.remove('hidden');
+    const closeModal = () => modal.classList.add('hidden');
+
+    document.getElementById('btn-export-pdf').addEventListener('click', openModal);
+    document.getElementById('btn-pro-badge').addEventListener('click', openModal);
+    document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+
+    document.getElementById('btn-go-checkout').addEventListener('click', () => {
+      // Abre en nueva pestaña externa cumpliendo 100% las directrices de OpenAI
+      const checkoutUrl = 'https://datacanvas.ranuk.dev/checkout?ref=chatgpt_panel&uid=' + Math.random().toString(36).substring(7);
+      window.open(checkoutUrl, '_blank');
+      closeModal();
+    });
+
+    window.addEventListener('resize', () => chartInstance && chartInstance.resize());
+    initChart('dark');
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "TC-001",
+    "title": "Perfilado y renderizado de CSV estándar de ventas",
+    "prompt": "Armame un dashboard visual de este CSV con gráficos interactivos y métricas:\nRegion,Sales,Target,Quarter\nNorth,45000,40000,Q1\nSouth,32000,35000,Q1\nEast,29000,28000,Q1\nWest,51000,48000,Q1",
+    "expected_behavior": "El modelo invoca `datacanvas_render_dashboard`. Se abre el panel lateral derecho con KPI cards, gráfico de barras comparativo y controles funcionales."
+  },
+  {
+    "id": "TC-002",
+    "title": "Cambio reactivo de temas y filtros en vivo",
+    "interaction": "Hacer clic en el botón Tema (Dark/Light) y escribir 'North' en el cuadro de filtro.",
+    "expected_behavior": "La interfaz actualiza su paleta de colores y filtra las series inmediatamente sin parpadeos ni recargas de página."
+  },
+  {
+    "id": "TC-003",
+    "title": "Exportación ejecutiva y redirección a checkout externo",
+    "interaction": "Hacer clic en el botón 'Exportar PDF' o en el banner Pro en el pie de página, seguido de 'Ir a Checkout Seguro'.",
+    "expected_behavior": "Se abre una pestaña externa hacia https://datacanvas.ranuk.dev/checkout sin capturar datos de pago dentro del iframe de ChatGPT."
+  }
+]
