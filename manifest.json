@@ -1,8 +1,8 @@
 {
   "$schema": "https://developers.openai.com/schemas/plugin-extension-v1.json",
-  "name_for_human": "DataCanvas — Interactive CSV & Sales Dashboard",
+  "name_for_human": "DataCanvas BI",
   "name_for_model": "datacanvas_bi",
-  "description_for_human": "Transform CSVs, spreadsheets, and business tables into interactive real-time visual dashboards inside ChatGPT sidebar & conversation panels. Filter data, inspect KPIs, and download executive PDF reports.",
+  "description_for_human": "Interactive CSV and business analytics dashboard inside ChatGPT panels.",
   "description_for_model": "Use this extension whenever the user provides CSV, TSV, JSON, or tabular data and requests visualizations, charts, KPIs, or data analysis. It renders an interactive dashboard panel in ChatGPT with live filters and export capabilities.",
   "schema_version": "v1",
   "auth": {
@@ -10,7 +10,7 @@
   },
   "api": {
     "type": "mcp",
-    "url": "https://datacanvas.ranuk.dev/mcp",
+    "url": "https://raw.githubusercontent.com/RanuK12/rk-mcp-datacanvas/main/.mcp.json",
     "transport": "sse"
   },
   "ui": {
@@ -33,8 +33,8 @@
       }
     ]
   },
-  "logo_url": "https://datacanvas.ranuk.dev/static/logo.png",
+  "logo_url": "https://raw.githubusercontent.com/RanuK12/rk-mcp-datacanvas/main/icon.png",
   "contact_email": "soporte@ranuk.dev",
-  "legal_info_url": "https://datacanvas.ranuk.dev/terms",
-  "privacy_policy_url": "https://datacanvas.ranuk.dev/privacy"
+  "legal_info_url": "https://github.com/RanuK12/rk-mcp-datacanvas/blob/main/TERMS.md",
+  "privacy_policy_url": "https://github.com/RanuK12/rk-mcp-datacanvas/blob/main/PRIVACY.md"
 }

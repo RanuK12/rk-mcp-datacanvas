@@ -13,7 +13,7 @@
     "shortDescription": "Interactive CSV Dashboards",
     "longDescription": "DataCanvas renders CSV and tabular data into interactive charts in ChatGPT conversation panels. Users can filter categories, inspect KPI metrics, and export PDF summaries.",
     "developerName": "Emilio Ranucoli",
-    "category": "Other",
+    "category": "Data & Analytics",
     "capabilities": ["interactive_ui"],
     "websiteUrl": "https://github.com/RanuK12/rk-mcp-datacanvas",
     "supportUrl": "https://github.com/RanuK12/rk-mcp-datacanvas/issues",
