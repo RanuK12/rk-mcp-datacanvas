@@ -1,0 +1,19 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "DataCanvas — Interactive CSV & Sales Dashboard",
+  "name_for_model": "datacanvas_bi",
+  "description_for_human": "Transform CSVs, spreadsheets, and business tables into interactive real-time visual dashboards inside ChatGPT sidebar & conversation panels. Filter data, inspect KPIs, and download executive PDF reports.",
+  "description_for_model": "Use this extension whenever the user provides CSV, TSV, JSON, or tabular data and requests visualizations, charts, KPIs, or data analysis. It renders an interactive dashboard panel in ChatGPT with live filters and export capabilities.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "mcp",
+    "url": "https://datacanvas.ranuk.dev/mcp",
+    "transport": "sse"
+  },
+  "logo_url": "https://datacanvas.ranuk.dev/static/logo.png",
+  "contact_email": "soporte@ranuk.dev",
+  "legal_info_url": "https://datacanvas.ranuk.dev/terms",
+  "privacy_policy_url": "https://datacanvas.ranuk.dev/privacy"
+}

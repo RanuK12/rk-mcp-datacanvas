@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "datacanvas": {
+      "url": "https://datacanvas.ranuk.dev/mcp",
+      "transport": "sse"
+    }
+  }
+}
