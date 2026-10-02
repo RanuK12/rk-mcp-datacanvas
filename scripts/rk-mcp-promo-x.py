@@ -2,7 +2,7 @@
 # (c) 2026 Ranuk IT Solutions - ranuk.dev
 """
 Campaña de difusión cada 3 días para DataCanvas BI en X (@ranuk_dev).
-Rota entre 3 ángulos comerciales con adjuntos visuales de alta conversión.
+Publica con videos Motion Design de 15s Full HD y banners de alta conversión.
 """
 import os
 import sys
@@ -10,7 +10,6 @@ import json
 import time
 import argparse
 import subprocess
-from datetime import datetime
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +19,7 @@ STATE_FILE = Path.home() / ".ranukita" / "datacanvas_promo_state.json"
 
 TWEETS = [
     {
-        "id": "ANGLE_1_SPEED_DASHBOARD",
+        "id": "ANGLE_1_MOTION_VIDEO",
         "text": (
             "¿Cansado de que ChatGPT te devuelva gráficos estáticos o código de matplotlib?\n\n"
             "Lanzamos DataCanvas BI: extensión MCP nativa para convertir cualquier CSV o tabla "
@@ -29,6 +28,7 @@ TWEETS = [
             "👉 Pruébalo gratis / Acceso Pro: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01\n"
             "#ChatGPT #MCP #DataAnalytics #BuildInPublic #AI"
         ),
+        "video": DOCS_DIR / "datacanvas_promo_video.mp4",
         "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
     },
     {
@@ -42,6 +42,7 @@ TWEETS = [
             "🔗 Conéctalo a tu flujo: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01\n"
             "#BusinessIntelligence #DataScience #OpenAI #Productivity"
         ),
+        "video": DOCS_DIR / "datacanvas_promo_video.mp4",
         "image": DOCS_DIR / "datacanvas_screenshot.png"
     },
     {
@@ -54,6 +55,7 @@ TWEETS = [
             "💻 Repo: https://github.com/RanuK12/rk-mcp-datacanvas\n"
             "🚀 Pro Pass: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
         ),
+        "video": DOCS_DIR / "datacanvas_promo_video.mp4",
         "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
     }
 ]
@@ -76,7 +78,6 @@ def run_promo(dry_run=False, force=False):
     state = load_state()
     now = time.time()
     
-    # 3 days in seconds = 259200
     interval = 3 * 86400
     elapsed = now - state.get("last_posted_ts", 0)
     
@@ -88,15 +89,21 @@ def run_promo(dry_run=False, force=False):
     next_idx = (state.get("last_index", -1) + 1) % len(TWEETS)
     tweet = TWEETS[next_idx]
 
+    has_video = "video" in tweet and tweet["video"].exists()
+    has_image = "image" in tweet and tweet["image"].exists()
+
     print("==================================================")
     print(f"Ángulo a publicar [{next_idx + 1}/{len(TWEETS)}]: {tweet['id']}")
-    print(f"Imagen: {tweet['image']}")
+    if has_video:
+        print(f"Video MP4: {tweet['video']} ({os.path.getsize(tweet['video']) / (1024*1024):.1f} MB)")
+    elif has_image:
+        print(f"Imagen: {tweet['image']}")
     print("--------------------------------------------------")
     print(tweet["text"])
     print("==================================================")
 
     if dry_run:
-        print("[DRY-RUN] Tweet verificado. No se publicó.")
+        print("[DRY-RUN] Tweet y multimedia verificados. Listo para postear.")
         return
 
     if not POST_SCRIPT.exists():
@@ -106,11 +113,14 @@ def run_promo(dry_run=False, force=False):
     cmd = [
         "python3",
         str(POST_SCRIPT),
-        "--cuenta", "ranuk_dev",
-        "--texto", tweet["text"],
+        "--account", "ranuk_dev",
+        "--text", tweet["text"],
     ]
-    if tweet["image"].exists():
-        cmd.extend(["--imagen", str(tweet["image"])])
+
+    if has_video:
+        cmd.extend(["--video", str(tweet["video"])])
+    elif has_image:
+        cmd.extend(["--image", str(tweet["image"])])
 
     print("Ejecutando publicación vía rk-x-post.py...")
     res = subprocess.run(cmd, capture_output=True, text=True)
