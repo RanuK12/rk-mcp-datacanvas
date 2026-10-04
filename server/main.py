@@ -8,6 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 import os
+import sys
+
+# Asegurar que el directorio server/ esté en sys.path
+SERVER_DIR = os.path.dirname(os.path.abspath(__file__))
+if SERVER_DIR not in sys.path:
+    sys.path.insert(0, SERVER_DIR)
 
 from tools import profile_dataset, build_render_dashboard_payload
 from report_bridge import generate_executive_pdf
