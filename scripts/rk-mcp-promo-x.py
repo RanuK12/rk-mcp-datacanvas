@@ -19,16 +19,15 @@ STATE_FILE = Path.home() / ".ranukita" / "datacanvas_promo_state.json"
 
 TWEETS = [
     {
-        "id": "ANGLE_1_MOTION_VIDEO",
+        "id": "ANGLE_1_MOTION_WALKTHROUGH",
         "text": (
             "¿Cansado de que ChatGPT te devuelva gráficos estáticos o código de matplotlib?\n\n"
             "Lanzamos DataCanvas BI: extensión MCP nativa para convertir cualquier CSV o tabla "
-            "en dashboards interactivos en tiempo real dentro del panel lateral de ChatGPT 📊⚡\n\n"
-            "Explora KPIs, filtra en vivo y exporta PDFs ejecutivos.\n\n"
-            "👉 Pruébalo gratis / Acceso Pro: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01\n"
-            "#ChatGPT #MCP #DataAnalytics #BuildInPublic #AI"
+            "en dashboards interactivos en tiempo real dentro del panel lateral de ChatGPT.\n\n"
+            "Explora KPIs, filtra en vivo con DuckDB-WASM y exporta PDFs ejecutivos en 1 clic.\n\n"
+            "👉 Pruébalo gratis / Acceso Pro: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
         ),
-        "video": DOCS_DIR / "datacanvas_promo_video.mp4",
+        "video": Path.home() / "Desktop/Oficina_Ranuk/rk-motion-forge/dist/videos/datacanvas_walkthrough_24s.mp4",
         "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
     },
     {
@@ -39,10 +38,9 @@ TWEETS = [
             "• Motor DuckDB-WASM 100% privado en navegador\n"
             "• Filtros reactivos y gráficos Apache ECharts\n"
             "• Exportación de PDFs ejecutivos listos para enviar\n\n"
-            "🔗 Conéctalo a tu flujo: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01\n"
-            "#BusinessIntelligence #DataScience #OpenAI #Productivity"
+            "🔗 Conéctalo a tu flujo: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
         ),
-        "video": DOCS_DIR / "datacanvas_promo_video.mp4",
+        "video": Path.home() / "Desktop/Oficina_Ranuk/rk-motion-forge/dist/videos/datacanvas_teaser_12s.mp4",
         "image": DOCS_DIR / "datacanvas_screenshot.png"
     },
     {
@@ -55,7 +53,7 @@ TWEETS = [
             "💻 Repo: https://github.com/RanuK12/rk-mcp-datacanvas\n"
             "🚀 Pro Pass: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
         ),
-        "video": DOCS_DIR / "datacanvas_promo_video.mp4",
+        "video": Path.home() / "Desktop/Oficina_Ranuk/rk-motion-forge/dist/videos/datacanvas_promo_15s.mp4",
         "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
     }
 ]
