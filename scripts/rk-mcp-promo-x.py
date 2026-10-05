@@ -21,11 +21,10 @@ TWEETS = [
     {
         "id": "ANGLE_1_MOTION_WALKTHROUGH",
         "text": (
-            "¿Cansado de que ChatGPT te devuelva gráficos estáticos o código de matplotlib?\n\n"
-            "Lanzamos DataCanvas BI: extensión MCP nativa para convertir cualquier CSV o tabla "
-            "en dashboards interactivos en tiempo real dentro del panel lateral de ChatGPT.\n\n"
-            "Explora KPIs, filtra en vivo con DuckDB-WASM y exporta PDFs ejecutivos en 1 clic.\n\n"
-            "👉 Pruébalo gratis / Acceso Pro: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
+            "Still waiting on static matplotlib PNGs inside ChatGPT?\n\n"
+            "We launched DataCanvas BI: a native Model Context Protocol extension that transforms tabular data into reactive, in-browser dashboards with DuckDB-WASM and Apache ECharts.\n\n"
+            "Explore metrics live and export executive PDF reports in seconds.\n\n"
+            "Try the Pro pass at https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01 today."
         ),
         "video": Path.home() / "Desktop/Oficina_Ranuk/rk-motion-forge/dist/videos/datacanvas_walkthrough_24s.mp4",
         "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
@@ -33,12 +32,12 @@ TWEETS = [
     {
         "id": "ANGLE_2_BUSINESS_EXECUTIVE",
         "text": (
-            "Para analistas, consultores y founders que viven en ChatGPT:\n\n"
-            "Con DataCanvas BI, pasas de datos crudos a un reporte visual para clientes en 10 segundos.\n"
-            "• Motor DuckDB-WASM 100% privado en navegador\n"
-            "• Filtros reactivos y gráficos Apache ECharts\n"
-            "• Exportación de PDFs ejecutivos listos para enviar\n\n"
-            "🔗 Conéctalo a tu flujo: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
+            "For engineers, consultants, and founders analyzing data in ChatGPT:\n\n"
+            "DataCanvas BI turns raw CSV tables into interactive client-ready dashboards in under ten seconds.\n"
+            "• Local DuckDB-WASM engine with zero backend data transmission\n"
+            "• Reactive Apache ECharts filters\n"
+            "• One-click executive PDF report export\n\n"
+            "Connect your workflow at https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01 directly."
         ),
         "video": Path.home() / "Desktop/Oficina_Ranuk/rk-motion-forge/dist/videos/datacanvas_teaser_12s.mp4",
         "image": DOCS_DIR / "datacanvas_screenshot.png"
@@ -46,12 +45,10 @@ TWEETS = [
     {
         "id": "ANGLE_3_DEV_MCP_ARCHITECTURE",
         "text": (
-            "El futuro de los agentes no son solo respuestas de texto: son micro-frontends interactivos.\n\n"
-            "Diseñamos DataCanvas sobre Model Context Protocol (MCP) y OpenAI Apps SDK para inyectar "
-            "dashboards interactivos directamente en el chat.\n\n"
-            "Código abierto + Pro Cloud:\n"
-            "💻 Repo: https://github.com/RanuK12/rk-mcp-datacanvas\n"
-            "🚀 Pro Pass: https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01"
+            "The next evolution of AI tools is not more markdown text, but embedded interactive micro-frontends.\n\n"
+            "We architected DataCanvas on Model Context Protocol (MCP) to bring interactive dashboards into ChatGPT sidebars.\n\n"
+            "Open source codebase with Pro cloud features.\n\n"
+            "Check out https://github.com/RanuK12/rk-mcp-datacanvas and https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01 now."
         ),
         "video": Path.home() / "Desktop/Oficina_Ranuk/rk-motion-forge/dist/videos/datacanvas_promo_15s.mp4",
         "image": DOCS_DIR / "datacanvas_promo_banner.jpg"
