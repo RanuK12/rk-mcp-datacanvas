@@ -90,10 +90,10 @@
     <footer class="flex items-center justify-between text-[11px] text-neutral-500 pt-1">
       <div class="flex items-center space-x-2">
         <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>DuckDB-WASM: Motor analítico en navegador activo (Costo $0)</span>
+        <span>Panel interactivo: gráficos, filtros y KPIs</span>
       </div>
       <button id="btn-pro-badge" class="text-blue-400 hover:text-blue-300 font-medium">
-        ⚡ DataCanvas Pro: Quitar marca de agua y conectar SQL
+        ⚡ DataCanvas Pro: próximamente
       </button>
     </footer>
   </div>
@@ -103,39 +103,16 @@
     <div class="bg-neutral-900 border border-neutral-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between">
         <h3 class="text-base font-bold text-white flex items-center space-x-2">
-          <span>🚀 Desbloqueá DataCanvas Pro</span>
+          <span>🚀 DataCanvas Pro (próximamente)</span>
         </h3>
         <button id="btn-close-modal" class="text-neutral-400 hover:text-white text-lg">&times;</button>
       </div>
       <p class="text-xs text-neutral-300 leading-relaxed">
-        Obtén reportes ejecutivos en PDF de alta fidelidad sin marca de agua, conexión directa con PostgreSQL / BigQuery y dashboards colaborativos para tu equipo.
+        Pegá una planilla y DataCanvas arma gráficos, filtros y KPIs en el panel lateral, sin salir de la conversación. Cuando lo tenés, lo exportás a PDF para mandarlo. El plan Pro todavía no está disponible.
       </p>
-      <div class="p-3 rounded-lg bg-neutral-800/60 border border-neutral-700 space-y-2">
-        <div class="flex items-center text-xs text-neutral-200 space-x-2">
-          <span class="text-blue-400">✓</span>
-          <span>Exportación ilimitada de PDFs vectoriales ejecutivos (>400KB)</span>
-        </div>
-        <div class="flex items-center text-xs text-neutral-200 space-x-2">
-          <span class="text-blue-400">✓</span>
-          <span>Sincronización automática de Google Sheets y bases de datos</span>
-        </div>
-        <div class="flex items-center text-xs text-neutral-200 space-x-2">
-          <span class="text-blue-400">✓</span>
-          <span>Soporte prioritario de ingenieros de Ranuk IT Solutions</span>
-        </div>
-      </div>
       <div class="pt-2 flex items-center justify-between">
-        <div>
-          <span class="text-lg font-bold text-white">$19</span>
-          <span class="text-xs text-neutral-400">/ mes (cancela cuando quieras)</span>
-        </div>
-        <button id="btn-go-checkout" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 font-semibold text-xs text-white shadow-lg shadow-blue-600/30 transition">
-          Ir a Checkout Seguro ↗
-        </button>
+        <button id="btn-go-checkout" class="hidden" aria-hidden="true"></button>
       </div>
-      <p class="text-[10px] text-neutral-500 text-center">
-        Procesado de forma segura y externa vía Stripe en datacanvas.ranuk.dev
-      </p>
     </div>
   </div>
 

@@ -8,111 +8,58 @@
   <img src="https://img.shields.io/badge/License-Proprietary%20Ranuk%20IT-blue?style=for-the-badge" alt="License"/>
 </p>
 
-> **Desarrollado y operado por Ranuk IT Solutions (Emilio Ranucoli)**  
-> Transforma cualquier conjunto de datos (CSV, TSV, JSON, Excel) en un tablero analítico interactivo en tiempo real directamente en la interfaz de ChatGPT (`thread_panel` lateral y `global` sidebar), con exportación ejecutiva de PDFs vectoriales de alta fidelidad (>400KB) y funnel externo a monetización SaaS.
+> **Desarrollado y operado por Ranuk IT Solutions (Emilio Ranucoli)**
+
+**Tu CSV, convertido en tablero dentro de ChatGPT.**
+Pegá una planilla y DataCanvas arma gráficos, filtros y KPIs en el panel lateral, sin salir de la conversación. Cuando lo tenés, lo exportás a PDF para mandarlo.
+
+*EN — Turn any CSV into a live dashboard inside ChatGPT. Paste a spreadsheet and DataCanvas builds charts, filters and KPI cards in the side panel, then exports a PDF you can send.*
 
 ---
 
-## 🎯 Resumen Ejecutivo
+## Qué hace hoy
 
-DataCanvas resuelve la principal limitación del análisis de datos en ChatGPT: **la estaticidad**. Cuando un usuario proporciona datos tabulares, en lugar de recibir una tabla de texto plano o una imagen estática generada con Matplotlib, DataCanvas despliega un **Conversation Panel interactivo** con filtros en vivo, selector dinámico de tipos de gráficos y tarjetas KPI reactivas.
+- Recibe datos CSV, TSV o JSON pegados en ChatGPT y perfila las columnas.
+- Arma un panel interactivo con gráficos (barras, líneas, donut), filtros y tarjetas KPI.
+- Exporta un reporte PDF.
+- Corre como servidor MCP (FastAPI, puerto 7800), con tests en `tests/test_mcp_server.py`.
 
-### Por qué este modelo genera negocio:
-- **Costo de Adquisición (CAC) = $0:** Tráfico orgánico impulsado por el directorio global de OpenAI (~1.2B WAU) y triggers contextuales de conversación.
-- **Costo de Cómputo Cliente = $0:** Las agregaciones analíticas corren en el navegador del usuario vía DuckDB-WASM y Apache ECharts.
-- **Monetización 100% Externa:** Cumple de forma estricta las normativas de OpenAI. Cero cobros digitales dentro del plugin; todo upgrade a planes Pro ($19/mes o $190/año) se realiza vía Stripe Hosted Checkout en un dominio controlado por Ranuk IT Solutions, sin comisiones ni revenue-share.
+## Cómo funciona
 
----
+1. Abrís DataCanvas en ChatGPT.
+2. Pegás o subís tus datos.
+3. Filtrás, cambiás el tipo de gráfico y exportás.
 
-## 🏗️ Arquitectura del Sistema
+**Para quién:** quien arma reportes de ventas o de operación cada semana en Excel y quiere mostrarlos sin abrir Power BI.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as Usuario en ChatGPT
-    participant GPT as ChatGPT (LLM)
-    participant MCP as Servidor MCP (FastAPI :7800)
-    participant UI as Panel UI (Iframe Sandboxed)
-    participant Engine as Ranuk Report Engine
-    participant Stripe as Stripe Checkout (Externo)
+## Privacidad
 
-    User->>GPT: "Armame un dashboard interactivo de este CSV"
-    GPT->>MCP: Call tool: datacanvas_render_dashboard(title, raw_data)
-    MCP-->>GPT: Return metadata OpenAIUiToolMetadata (ui://datacanvas/dashboard)
-    GPT->>UI: Despliega Iframe en el panel lateral vía postMessage
-    User->>UI: Filtra datos, alterna gráficos y examina KPIs
-    UI->>UI: Agregación client-side sin costo de cómputo para el backend
-    User->>UI: Click en "Exportar Reporte Ejecutivo PDF"
-    alt Usuario Gratuito
-        UI->>Engine: Genera reporte con watermark Ranuk
-        Engine-->>UI: Descarga PDF oficial (>400KB) + Modal Upgrade
-    else Click en "Desbloquear Pro / White-Label"
-        UI->>User: window.open("https://datacanvas.ranuk.dev/checkout")
-        User->>Stripe: Pago de suscripción ($19/mo)
-        Stripe->>MCP: Webhook asienta cobro en income_ledger.json
-    end
-```
+Los datos que pegás se envían al servidor MCP de DataCanvas para perfilarlos y armar el panel; para el PDF, el servidor genera el archivo. No se procesan solo en el navegador. Detalle en [PRIVACY.md](PRIVACY.md).
+
+## Plan Pro
+
+Todavía no está disponible. Hoy no hay límite de PDFs ni marca de agua, ni conexión a bases de datos.
+
+## Soporte
+
+soporte@ranuk.dev
 
 ---
 
-## 📦 Estructura del Repositorio
+## Estructura del repositorio
 
 ```text
 rk-mcp-datacanvas/
-├── manifest.json              # Especificación oficial de OpenAI Plugin Extension
-├── README.md                  # Manual de arquitectura, despliegue y operaciones
+├── manifest.json
 ├── server/
-│   ├── main.py               # Servidor FastAPI (Protocolo MCP JSON-RPC + UI Server)
-│   ├── tools.py              # Definición analítica y schemas OpenAIUiToolMetadata
-│   └── report_bridge.py      # Conexión al motor ranukita_report.py
-├── ui/
-│   └── index.html            # Frontend interactivo para el iframe (Tailwind + ECharts)
+│   ├── main.py            # Servidor FastAPI (MCP JSON-RPC + UI)
+│   ├── tools.py           # Perfilado de datos y payload del panel
+│   └── report_bridge.py   # Generación del PDF
+├── ui/index.html          # Panel interactivo (Tailwind + ECharts)
 ├── scripts/
-│   ├── rk-mcp-pack.py        # Validador y empaquetador para Apps Management (.zip)
-│   └── rk-mcp-growth.py      # Cron diario de health check, leads B2B y sync con ledger
-├── tests/
-│   └── test_mcp_server.py    # Suite de tests (MCP handshake, tools y reportes)
-├── submission/
-│   ├── video_script.md       # Guion de 75 segundos para el revisor de OpenAI
-│   └── test_cases.json       # Casos de prueba reproducibles para el submission
-└── dist/
-    └── rk-mcp-datacanvas.zip # Paquete validado y listo para envío
+├── tests/test_mcp_server.py
+└── submission/
 ```
-
----
-
-## 💎 Modelo de Oferta: Free vs. Pro
-
-| Característica | DataCanvas Free (In-Plugin) | DataCanvas Pro ($19/mes o $190/año) |
-|---|:---:|:---:|
-| Visualización interactiva en ChatGPT | Ilimitada | Ilimitada |
-| Gráficos dinámicos (Barras, Líneas, Donut) | Sí | Sí + Mapas de Calor y Funnels |
-| Filtros en tiempo real vía DuckDB-WASM | Sí | Sí |
-| Exportación de Reportes PDF | 3 reportes/mes (con marca de agua) | **Ilimitados, White-Label y >400KB** |
-| Persistencia de plantillas en Sidebar | 1 plantilla | **Ilimitadas** |
-| Conexión con PostgreSQL / BigQuery | No | **Sí** |
-| Licencia On-Premise para empresas | No | **Disponible ($490 un solo pago)** |
-
----
-
-## 🤖 Manual de Operaciones: Distribución de Tareas
-
-Para garantizar que el sistema funcione de forma autónoma y minimice la carga manual, los roles están distribuidos entre el equipo de agentes de Ranukita y Emilio:
-
-### 👤 Tareas de Emilio (Única vez — ~5 minutos):
-1. **Subir paquete en OpenAI:** Ingresar a [OpenAI Developer Dashboard / Apps Management](https://developers.openai.com/apps), crear nueva aplicación y subir el archivo [`dist/rk-mcp-datacanvas.zip`](file:///Users/emilioranucoli/Desktop/Oficina_Ranuk/rk-mcp-datacanvas/dist/rk-mcp-datacanvas.zip).
-2. **Video de Submission:** Grabar un walkthrough de 75 segundos siguiendo el guion [`submission/video_script.md`](file:///Users/emilioranucoli/Desktop/Oficina_Ranuk/rk-mcp-datacanvas/submission/video_script.md).
-3. **Dominio Público:** Asignar el túnel DNS `datacanvas.ranuk.dev` hacia el servidor local (ej. Cloudflare Tunnel hacia el puerto 7800).
-
-### 🤖 Tareas de los Agentes de Ranukita (Automáticas 24/7):
-- **Director Comercial:** Revisa semanalmente la tasa de conversión a checkout y valida las metas de ingresos en el ledger.
-- **Vendedor:** Monitorea los correos empresariales registrados en descargas de reportes para enviar propuestas de licencia Enterprise ($490 a $1,500).
-- **Dev-Bounties / NEXUS:** Mantiene el servidor MCP activo, atiende issues de formato de datos y corre los tests de regresión.
-- **Cron Diario (`rk-mcp-growth.py`):**
-  - Corre a las 10:00 AM todos los días.
-  - Verifica el uptime del servidor.
-  - Registra las transacciones externas de Stripe directamente en `~/.ranukita/income_ledger.json`.
-  - Emite el reporte de crecimiento en `~/.ranukita/buzon/`.
 
 ---
 
