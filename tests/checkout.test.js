@@ -36,6 +36,7 @@ test('reintentos reusan la misma Idempotency-Key y mandan {product:"pro"}', asyn
   assert.strictEqual((await a.request()).kind, 'retryable');
   assert.strictEqual((await a.request()).kind, 'redirect');
   assert.strictEqual(calls[0].url, '/api/checkout');
+  assert.strictEqual(calls[0].init.mode, 'cors');
   assert.strictEqual(calls[0].init.method, 'POST');
   assert.deepStrictEqual(JSON.parse(calls[0].init.body), { product: 'pro' });
   assert.strictEqual(calls[0].init.headers['Idempotency-Key'], 'uuid-1');
@@ -47,4 +48,38 @@ test('error de red y timeout -> reintentables', async () => {
   const b = C.createCheckoutAttempt({ timeoutMs: 20, crypto: { randomUUID: () => 'k' },
     fetch: (u, init) => new Promise((_, rej) => init.signal.addEventListener('abort', () => { const e = new Error('a'); e.name = 'AbortError'; rej(e); })) });
   assert.deepStrictEqual(await b.request(), { kind: 'retryable', code: 'timeout' });
+});
+
+test('base URL configurable', async () => {
+  assert.strictEqual(C.checkoutUrl(''), '/api/checkout');
+  assert.strictEqual(C.checkoutUrl('https://pay.example.dev/'), 'https://pay.example.dev/api/checkout');
+  let url;
+  const a = C.createCheckoutAttempt({ base: 'https://pay.example.dev', crypto: { randomUUID: () => 'k' },
+    fetch: async (u) => { url = u; return res(502, {}); } });
+  await a.request();
+  assert.strictEqual(url, 'https://pay.example.dev/api/checkout');
+});
+test('opener: usa window.openai.openExternal con {href} si existe', () => {
+  const got = []; let opened = false;
+  const o = C.prepareOpener({ openai: { openExternal: (x) => got.push(x) }, open: () => { opened = true; } });
+  assert.strictEqual(o.mode, 'openExternal');
+  assert.deepStrictEqual(o.navigate('https://checkout.stripe.com/x'), { opened: true });
+  assert.deepStrictEqual(got, [{ href: 'https://checkout.stripe.com/x' }]);
+  assert.strictEqual(opened, false);
+});
+test('opener: ventana abierta antes del fetch, navega o se cierra en error', () => {
+  const args = []; const w = { location: {}, closed: false, close() { this.closed = true; } };
+  const o = C.prepareOpener({ open: (...a) => { args.push(a); return w; } });
+  assert.deepStrictEqual(args, [['', '_blank']]);
+  assert.strictEqual(w.opener, null);
+  o.navigate('https://checkout.stripe.com/y');
+  assert.strictEqual(w.location.href, 'https://checkout.stripe.com/y');
+  const w2 = { location: {}, closed: false, close() { this.closed = true; } };
+  C.prepareOpener({ open: () => w2 }).cancel();
+  assert.strictEqual(w2.closed, true);
+});
+test('opener: popup bloqueado -> devuelve url para mostrar link', () => {
+  const o = C.prepareOpener({ open: () => null });
+  assert.strictEqual(o.mode, 'link');
+  assert.deepStrictEqual(o.navigate('https://checkout.stripe.com/z'), { opened: false, url: 'https://checkout.stripe.com/z' });
 });

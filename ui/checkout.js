@@ -3,7 +3,8 @@
 (function (root) {
   'use strict';
 
-  var CHECKOUT_ENDPOINT = '/api/checkout';
+  var CHECKOUT_PATH = '/api/checkout';
+  function checkoutUrl(base) { return String(base || '').replace(/\/+$/, '') + CHECKOUT_PATH; }
   var TIMEOUT_MS = 10000;
   var SUPPORT_EMAIL = 'soporte@ranuk.dev';
 
@@ -14,7 +15,8 @@
     unavailable: 'Checkout is temporarily unavailable. Try again',
     rateLimited: function (n) { return 'Too many attempts. You can try again in ' + n + ' s.'; },
     fatal: 'Something went wrong on our side. Please contact ' + SUPPORT_EMAIL,
-    note: 'Redirects to Stripe secure checkout.'
+    note: 'Opens Stripe in a new tab.',
+    openLink: 'Open Stripe checkout'
   };
 
   function isStripeCheckoutUrl(url) {
@@ -67,8 +69,9 @@
         var ctrl = new AbortController();
         var timer = setTimeout(function () { ctrl.abort(); }, timeoutMs);
         try {
-          var res = await fetchFn(opts.endpoint || CHECKOUT_ENDPOINT, {
+          var res = await fetchFn(checkoutUrl(opts.base), {
             method: 'POST',
+            mode: 'cors',
             headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
             body: JSON.stringify({ product: 'pro' }),
             signal: ctrl.signal
@@ -85,8 +88,37 @@
     };
   }
 
+  // Apertura compatible con iframe (app de ChatGPT). Llamar SINCRÓNICAMENTE en el click,
+  // antes del fetch. deps: { openai, open } inyectables para tests.
+  function prepareOpener(deps) {
+    deps = deps || {};
+    var openai = deps.openai;
+    if (openai && typeof openai.openExternal === 'function') {
+      return {
+        mode: 'openExternal',
+        navigate: function (url) { openai.openExternal({ href: url }); return { opened: true }; },
+        cancel: function () {}
+      };
+    }
+    var w = null;
+    try { w = deps.open ? deps.open('', '_blank') : null; } catch (e) { w = null; }
+    if (!w) {
+      return {
+        mode: 'link',
+        navigate: function (url) { return { opened: false, url: url }; },
+        cancel: function () {}
+      };
+    }
+    try { w.opener = null; } catch (e) {}
+    return {
+      mode: 'window',
+      navigate: function (url) { w.location.href = url; return { opened: true }; },
+      cancel: function () { try { w.close(); } catch (e) {} }
+    };
+  }
+
   var api = {
-    CHECKOUT_ENDPOINT: CHECKOUT_ENDPOINT, TIMEOUT_MS: TIMEOUT_MS, TEXT: TEXT,
+    CHECKOUT_PATH: CHECKOUT_PATH, checkoutUrl: checkoutUrl, prepareOpener: prepareOpener, TIMEOUT_MS: TIMEOUT_MS, TEXT: TEXT,
     isStripeCheckoutUrl: isStripeCheckoutUrl, parseRetryAfter: parseRetryAfter,
     classifyResponse: classifyResponse, createCheckoutAttempt: createCheckoutAttempt
   };
