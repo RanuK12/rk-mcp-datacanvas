@@ -129,16 +129,23 @@
           <span class="text-lg font-bold text-white">$19</span>
           <span class="text-xs text-neutral-400">/ mes (cancela cuando quieras)</span>
         </div>
-        <button id="btn-go-checkout" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 font-semibold text-xs text-white shadow-lg shadow-blue-600/30 transition">
-          Ir a Checkout Seguro ↗
-        </button>
+        <div class="flex flex-col items-end">
+          <!-- Oculto hasta que CHECKOUT_ENABLED = true (endpoint POST /api/checkout desplegado) -->
+          <button id="btn-go-checkout" type="button" hidden class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed font-semibold text-xs text-white shadow-lg shadow-blue-600/30 transition">
+            Upgrade to Pro
+          </button>
+          <p id="checkout-note" hidden class="mt-1 text-[10px] text-neutral-500">Redirects to Stripe secure checkout.</p>
+        </div>
       </div>
+      <div id="checkout-status" role="status" aria-live="polite" class="text-xs text-amber-300 min-h-[1rem]"></div>
+      <button id="btn-checkout-retry" type="button" hidden class="px-3 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-xs text-neutral-200">Try again</button>
       <p class="text-[10px] text-neutral-500 text-center">
         Procesado de forma segura y externa vía Stripe en datacanvas.ranuk.dev
       </p>
     </div>
   </div>
 
+  <script src="./checkout.js"></script>
   <script>
     // Inicializar ECharts
     let chartInstance = null;
@@ -265,12 +272,57 @@
     document.getElementById('btn-pro-badge').addEventListener('click', openModal);
     document.getElementById('btn-close-modal').addEventListener('click', closeModal);
 
-    document.getElementById('btn-go-checkout').addEventListener('click', () => {
-      // Enlace oficial de checkout en Stripe creado para DataCanvas Pro
-      const checkoutUrl = 'https://buy.stripe.com/4gMfZaaQf3A2e6vdjf4Ja01?client_reference_id=' + Math.random().toString(36).substring(7);
-      window.open(checkoutUrl, '_blank');
-      closeModal();
-    });
+    // Checkout armado en el servidor (POST /api/checkout). Ver ui/checkout.js
+    const CHECKOUT_ENABLED = false; // Pasar a true cuando NEXUS despliegue el endpoint
+    (function setupCheckout() {
+      const C = window.DataCanvasCheckout;
+      const btn = document.getElementById('btn-go-checkout');
+      const retryBtn = document.getElementById('btn-checkout-retry');
+      const statusEl = document.getElementById('checkout-status');
+      const note = document.getElementById('checkout-note');
+      if (!CHECKOUT_ENABLED || !C) return; // botón sigue oculto
+      btn.hidden = false; note.hidden = false;
+
+      let attempt = null;   // misma Idempotency-Key para todos los reintentos de este intento
+      let busy = false;
+      let countdown = null;
+
+      function setState(state, msg) {
+        btn.disabled = state === 'loading' || state === 'rate_limited' || state === 'fatal';
+        btn.setAttribute('aria-busy', state === 'loading' ? 'true' : 'false');
+        btn.textContent = state === 'loading' ? C.TEXT.loading : C.TEXT.idle;
+        retryBtn.hidden = state !== 'retryable';
+        statusEl.textContent = msg || '';
+      }
+
+      async function run() {
+        if (busy) return; // evita doble click
+        busy = true;
+        if (!attempt) attempt = C.createCheckoutAttempt();
+        setState('loading');
+        const r = await attempt.request();
+        busy = false;
+        if (r.kind === 'redirect') { window.location.assign(r.url); return; } // misma pestaña
+        if (r.kind === 'retryable') { setState('retryable', C.TEXT.unavailable); return; }
+        if (r.kind === 'rate_limited') {
+          let n = r.retryAfter;
+          setState('rate_limited', C.TEXT.rateLimited(n));
+          clearInterval(countdown);
+          countdown = setInterval(() => {
+            n -= 1;
+            if (n <= 0) { clearInterval(countdown); setState('idle'); }
+            else statusEl.textContent = C.TEXT.rateLimited(n);
+          }, 1000);
+          return;
+        }
+        attempt = null;
+        setState('fatal', C.TEXT.fatal);
+      }
+
+      btn.addEventListener('click', run);
+      retryBtn.addEventListener('click', run);
+      setState('idle');
+    })();
 
     window.addEventListener('resize', () => chartInstance && chartInstance.resize());
     initChart('dark');
