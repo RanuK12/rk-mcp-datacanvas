@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.ranuk12/datacanvas",
+  "name": "io.github.RanuK12/datacanvas",
   "title": "Ranuk DataCanvas BI",
   "description": "Interactive data visualization and executive PDF dashboards for ChatGPT, Claude, and Cursor.",
   "repository": {
