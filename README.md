@@ -100,8 +100,8 @@ rk-mcp-datacanvas/
 Para garantizar que el sistema funcione de forma autónoma y minimice la carga manual, los roles están distribuidos entre el equipo de agentes de Ranukita y Emilio:
 
 ### 👤 Tareas de Emilio (Única vez — ~5 minutos):
-1. **Subir paquete en OpenAI:** Ingresar a [OpenAI Developer Dashboard / Apps Management](https://developers.openai.com/apps), crear nueva aplicación y subir el archivo [`dist/rk-mcp-datacanvas.zip`](file:///Users/emilioranucoli/Desktop/Oficina_Ranuk/rk-mcp-datacanvas/dist/rk-mcp-datacanvas.zip).
-2. **Video de Submission:** Grabar un walkthrough de 75 segundos siguiendo el guion [`submission/video_script.md`](file:///Users/emilioranucoli/Desktop/Oficina_Ranuk/rk-mcp-datacanvas/submission/video_script.md).
+1. **Subir paquete en OpenAI:** Ingresar a [OpenAI Developer Dashboard / Apps Management](https://developers.openai.com/apps), crear nueva aplicación y subir el archivo [`dist/rk-mcp-datacanvas.zip`](dist/rk-mcp-datacanvas.zip).
+2. **Video de Submission:** Grabar un walkthrough de 75 segundos siguiendo el guion [`submission/video_script.md`](submission/video_script.md).
 3. **Dominio Público:** Asignar el túnel DNS `datacanvas.ranuk.dev` hacia el servidor local (ej. Cloudflare Tunnel hacia el puerto 7800).
 
 ### 🤖 Tareas de los Agentes de Ranukita (Automáticas 24/7):
