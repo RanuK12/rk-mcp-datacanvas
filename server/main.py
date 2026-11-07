@@ -20,9 +20,18 @@ from report_bridge import generate_executive_pdf
 
 app = FastAPI(title="DataCanvas MCP Server", version="1.0.0")
 
+ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://chatgpt.com",
+    "https://chat.openai.com",
+    "https://ranuk.dev",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
